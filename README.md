@@ -48,7 +48,7 @@ mkdir -p ~/.claude/skills && cp -r ui-taste-loop/ ~/.claude/skills/ui-taste-loop
 
 - 流程骨架（三阶段、seed 发散、减法交付）与「两轮不涨交人裁决」：**已实测有效**
 - 锚定 A/B 评分协议、豁免清单、问题三分类：**实测驱动修订，尚未二次实测**（下次 UI 票跑完做对照验证）
-- Copy Audit 文案轴（impeccable 文案规则 + 中文词表初版 + 人填真值）：**调研驱动设计，尚未实测**（词表随实测迭代）
+- Copy Audit 文案轴与 critic 文案评审项（impeccable 文案规则 + 中文词表初版 + 人填真值）：**调研驱动设计，尚未实测**（词表随实测迭代）
 - critic 需要 agent 具备子 agent 派发与截图能力（浏览器截图或实现侧先渲染）
 
 ## 来源与致谢

@@ -1,6 +1,6 @@
 ---
 name: ui-taste-loop
-description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）。Discover 用 seed string 注入外部随机性发散 4 个方向，Build+Critique 用 fresh-context critic 只看截图做锚定对比评审（新旧两版 A/B 判决为主信号、绝对分仅记趋势），迭代到复合退出条件，Deliver 做减法与 AI Tells 审计。面向用户的界面生成或视觉改版任务（landing page、面板页、组件视觉重做）先走本流程；纯逻辑实现、无视觉产物的任务不适用。
+description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）。Discover 用 seed string 注入外部随机性发散 4 个方向，Build+Critique 用 fresh-context critic 只看截图做锚定对比评审（新旧两版 A/B 判决为主信号、绝对分仅记趋势），迭代到复合退出条件，Deliver 做减法、AI Tells 审计与文案轴 Copy Audit（lint + 人填真值）。面向用户的界面生成或视觉改版任务（landing page、面板页、组件视觉重做）先走本流程；纯逻辑实现、无视觉产物的任务不适用。
 ---
 
 # UI Taste Loop
@@ -28,7 +28,7 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
 3. **减法收尾**：AI Tells Audit + Copy Audit 文案轴（lint + 人填真值）（Phase 3）
 4. **代码轴收口**：/code-review 双轴照常跑；critique 轮次中的 CSS/结构改动若触碰行为，回到 /tdd 补红绿
 
-**完成判定：一张 UI 票完成 = 测试全绿 + critic 评审通过（Phase 2 复合退出条件）+ code-review 通过，三者缺一不可。**
+**完成判定：一张 UI 票完成 = 测试全绿 + critic 评审通过（Phase 2 复合退出条件）+ Phase 3 收口（AI Tells/Copy Audit 命中清零或经裁决留档、真值槽位已填）+ code-review 通过，缺一不可。**
 
 ## Phase 1: Discover——发散，禁止直接收敛
 
@@ -100,19 +100,19 @@ AI 只会加不会减，克制本身就是高级感。打磨阶段主要工作�
 1. **砍元素**：多余 label/badge/空容器、无动机装饰、比原生组件丑的自绘控件（对照平台规范）。
 2. **AI Tells Audit**：跑 `npx impeccable detect`（62 条确定性 slop 检测，零安装；其中 3 条为文案类规则，归第 3 步 Copy Audit 处理）；检测项不够再按本项目 grep 自写。不要在第一轮生成时就全面禁用套路（模型会瘫痪），在 polish 阶段一次清完。
 3. **Copy Audit（文案轴：lint → 真值）**：只管 landing/营销层与检测流程；产品 UI 微文案（按钮/错误/空态/术语一致）归 frontend-design 写作节——两层规则相反（营销层允许第一人称与叙事，UI 层禁 "we"），不混用：
-   - **lint（确定性，与 AI Tells Audit 同趟跑）**：impeccable 已含 3 条文案规则——marketing-buzzword（29 短语，**单次命中即报**）、aphoristic-cadence（"X. No Y." 警句式 ≥3 次才报）、em-dash-overuse（≥8 个+密度门槛），英文项目零新增工具。词表误伤（品牌名恰含词表词——顶级站也会犯，Basecamp 自家文案就用过 industry-leading）经人裁决进豁免清单。中文项目自建 grep 词表（现有工具与词表全英文，中文是空白）：
+   - **lint（确定性，与 AI Tells Audit 同趟跑）**：impeccable 已含 3 条文案规则——marketing-buzzword（29 短语，**单次命中即报**）、aphoristic-cadence（"X. No Y." 警句式 ≥3 次才报）、em-dash-overuse（≥8 个+密度门槛），英文项目零新增工具。词表误伤（品牌名恰含词表词——顶级站也会犯，Basecamp 自家文案就用过 industry-leading）经人裁决保留并记入豁免清单快照（收口留档，下次不重复裁决）。中文项目自建 grep 词表（现有工具与词表全英文，中文是空白）：
 
      ```bash
-     grep -rnoE '赋能|一站式|全方位|行业领先|重新定义|颠覆|未来已来|极致体验|卓越体验|匠心打造|精心打造|无缝体验|无缝衔接|降本增效|助您|让您轻松|不止于|更是' \
+     grep -rnoE '赋能|一站式|全方位|行业领先|重新定义|颠覆|未来已来|极致体验|卓越体验|匠心打造|精心打造|无缝体验|无缝衔接|降本增效|助您|让您轻松' \
        --include='*.tsx' --include='*.jsx' --include='*.html' --include='*.vue' .
      ```
 
-     初版词表随实测迭代；单次即报+豁免清单消化误伤。句式 tell（排比三连、"不是…而是…"、"不仅…更是…"）不进 grep，交 critic 按密度判
+     初版词表随实测迭代；单次命中即报，误伤走人裁决留档。句式 tell（排比三连、"不是…而是…"、"不止于…更是…"）不进 grep——由 Phase 2 critic 循环按密度判，Phase 3 不重跑 critic
    - **真值（人）**：AI 文案一律当 Lorem ipsum，但人不是重写全部，是**填真值**——真实数字/客户名/机制名只有人有（顶级 landing 的具体性全靠 50,000/$1.9T/99.9999% 式实物，空形容词是 AI tell）；headline/副标/CTA 终稿人拍板：更短、更口语、零营销腔
 
 ## 收口
 
-- 记录留档：seed string、4 个方向、每轮 critic 绝对分与 A/B 判决序列、豁免清单快照、最终截图，供下次 retro 提炼个人 taste 偏好
+- 记录留档：seed string、4 个方向、每轮 critic 绝对分与 A/B 判决序列、豁免清单快照、Copy Audit 词表命中与裁决、最终截图，供下次 retro 提炼个人 taste 偏好
 - 3D 视觉向的深度循环可选装 achimala/dream-loop（需 Blender MCP）；常规 UI 用本流程即可
 
-方法论来源：Anshu Chimala《How to turn your AI into a world-class designer》（Lenny's Newsletter, 2026-09-01，[付费原文](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world)／[免费镜像](https://github.com/CodingRookie98/cr-agent-arsenal/blob/master/docs/reference/articles/how-to-turn-your-ai-into-a-world-class-designer.md)）。其中「一次出 4 个方向」为本地工程化裁量（源出原文「先跑 1-2 轮看收敛性再放开，防烧 token」）；锚定对比评审、豁免清单、复合退出条件为 2026-11-18 首次全流程实测后的修订——五轮绝对分 7.2→8.0→7.5→7.6→8.3 呈锯齿，冻结页裁判间方差 ±0.5~1.2 证明裸绝对分跨裁判不可比，实测数据与四机制分析见 [docs/evaluation-2026-11-18.md](docs/evaluation-2026-11-18.md)；其余流程均为原文技巧（image-gen 闭环的 skill 化成品另见 [achimala/dream-loop](https://github.com/achimala/dream-loop)）。
+方法论来源：Anshu Chimala《How to turn your AI into a world-class designer》（Lenny's Newsletter, 2026-09-01，[付费原文](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world)／[免费镜像](https://github.com/CodingRookie98/cr-agent-arsenal/blob/master/docs/reference/articles/how-to-turn-your-ai-into-a-world-class-designer.md)）。其中「一次出 4 个方向」为本地工程化裁量（源出原文「先跑 1-2 轮看收敛性再放开，防烧 token」）；锚定对比评审、豁免清单、复合退出条件为 2026-11-18 首次全流程实测后的修订——五轮绝对分 7.2→8.0→7.5→7.6→8.3 呈锯齿，冻结页裁判间方差 ±0.5~1.2 证明裸绝对分跨裁判不可比，实测数据与四机制分析见 [docs/evaluation-2026-11-18.md](docs/evaluation-2026-11-18.md)；Copy Audit 文案轴（lint/中文词表/人填真值）为 2026-11-18 调研驱动的本地裁量——源出原文 T8「文案手写」但做了细化，词表与阈值行为经 impeccable 源码复核；其余流程均为原文技巧（image-gen 闭环的 skill 化成品另见 [achimala/dream-loop](https://github.com/achimala/dream-loop)）。
