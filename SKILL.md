@@ -12,7 +12,7 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
 | skill | 阶段 | 职能 |
 |---|---|---|
 | ui-taste-loop（本 skill） | 全流程编排 | 发散 → 评审 → 减法循环骨架 |
-| frontend-design | 生成端 | 实现时的风格约束与反模式 |
+| frontend-design | 生成端 | 实现时的风格约束与反模式（含产品 UI 微文案写作节：active voice、CTA 说清动作、术语一致、错误不道歉） |
 | emil-design-eng | 细节 | 动效频率、easing、组件反模式 |
 | web-design-guidelines | 合规下限 | a11y/性能审计（review my UI）——管「对不对」 |
 | impeccable（npx，未安装） | 审美下限（Phase 3 出场） | 确定性 slop/AI Tells lint——管「俗不俗」，不管「对不对」 |
@@ -25,7 +25,7 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
 
 1. **行为先行**：/tdd 红绿环把功能做绿——跑不起来的 UI 没法评审美
 2. **视觉迭代**：行为绿 → 截图 → critic 锚定评审循环（Phase 2）
-3. **减法收尾**：AI Tells Audit + 文案手写（Phase 3）
+3. **减法收尾**：AI Tells Audit + Copy Audit 文案轴（lint + 人填真值）（Phase 3）
 4. **代码轴收口**：/code-review 双轴照常跑；critique 轮次中的 CSS/结构改动若触碰行为，回到 /tdd 补红绿
 
 **完成判定：一张 UI 票完成 = 测试全绿 + critic 评审通过（Phase 2 复合退出条件）+ code-review 通过，三者缺一不可。**
@@ -78,7 +78,8 @@ EOF
   2) 逐页判决：新版更好/持平/更差 + 一句话理由；单独列出新版引入的问题
 - 兼顾整体构图与微观细节（间距、字阶、对齐、色彩层次）
 - 识别并惩罚「用力过猛/明显 AI 味」：紫青弥散光晕、渐变描边、万物容器化、
-  全面药丸圆角、无动机的漂浮小标签、模板化左文右图 hero
+  全面药丸圆角、无动机的漂浮小标签、模板化左文右图 hero、营销腔文案
+  （buzzword/空形容词——具体性应来自数字与实物）、对仗警句反复出现
 - 大胆有立场，不选安全牌；想象顶级工作室会怎么执行这个美学，指出与它的最大差距
 - 豁免清单（不要再提、不据此扣分）：<循环开始时一次性导出，见下>
 - 末行输出四页等权平均分 `X.X/10`（固定等权，仅作跨轮趋势参考）
@@ -97,8 +98,17 @@ EOF
 AI 只会加不会减，克制本身就是高级感。打磨阶段主要工作是删：
 
 1. **砍元素**：多余 label/badge/空容器、无动机装饰、比原生组件丑的自绘控件（对照平台规范）。
-2. **AI Tells Audit**：跑 `npx impeccable detect`（62 条确定性 slop 检测，零安装）；检测项不够再按本项目 grep 自写。不要在第一轮生成时就全面禁用套路（模型会瘫痪），在 polish 阶段一次清完。
-3. **文案手写**：AI 生成的文案一律当 Lorem ipsum，headline/副标/CTA 由用户人工重写——更短、更口语、零营销腔。
+2. **AI Tells Audit**：跑 `npx impeccable detect`（62 条确定性 slop 检测，零安装；其中 3 条为文案类规则，归第 3 步 Copy Audit 处理）；检测项不够再按本项目 grep 自写。不要在第一轮生成时就全面禁用套路（模型会瘫痪），在 polish 阶段一次清完。
+3. **Copy Audit（文案轴：lint → 真值）**：只管 landing/营销层与检测流程；产品 UI 微文案（按钮/错误/空态/术语一致）归 frontend-design 写作节——两层规则相反（营销层允许第一人称与叙事，UI 层禁 "we"），不混用：
+   - **lint（确定性，与 AI Tells Audit 同趟跑）**：impeccable 已含 3 条文案规则——marketing-buzzword（29 短语，**单次命中即报**）、aphoristic-cadence（"X. No Y." 警句式 ≥3 次才报）、em-dash-overuse（≥8 个+密度门槛），英文项目零新增工具。词表误伤（品牌名恰含词表词——顶级站也会犯，Basecamp 自家文案就用过 industry-leading）经人裁决进豁免清单。中文项目自建 grep 词表（现有工具与词表全英文，中文是空白）：
+
+     ```bash
+     grep -rnoE '赋能|一站式|全方位|行业领先|重新定义|颠覆|未来已来|极致体验|卓越体验|匠心打造|精心打造|无缝体验|无缝衔接|降本增效|助您|让您轻松|不止于|更是' \
+       --include='*.tsx' --include='*.jsx' --include='*.html' --include='*.vue' .
+     ```
+
+     初版词表随实测迭代；单次即报+豁免清单消化误伤。句式 tell（排比三连、"不是…而是…"、"不仅…更是…"）不进 grep，交 critic 按密度判
+   - **真值（人）**：AI 文案一律当 Lorem ipsum，但人不是重写全部，是**填真值**——真实数字/客户名/机制名只有人有（顶级 landing 的具体性全靠 50,000/$1.9T/99.9999% 式实物，空形容词是 AI tell）；headline/副标/CTA 终稿人拍板：更短、更口语、零营销腔
 
 ## 收口
 
