@@ -1,0 +1,27 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # dogfood：词表单点取自 SKILL.md 的 grep 行（改词表只改 SKILL.md），
+      # 扫 README 与 docs——SKILL.md 自身含词表定义与示例，不入扫描
+      - name: copy wordlist
+        run: |
+          PATTERN=$(sed -n "s/.*grep -rnoE '\([^']*\)'.*/\1/p" SKILL.md | head -1)
+          if grep -qE "$PATTERN" README.md docs/*.md; then
+            echo "::error::中文营销腔词表命中（词表定义见 SKILL.md Phase 3.3）"
+            grep -nE "$PATTERN" README.md docs/*.md
+            exit 1
+          fi
+      - name: links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-retries 3 README.md SKILL.md docs/*.md
+          fail: true
