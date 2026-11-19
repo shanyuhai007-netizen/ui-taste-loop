@@ -23,7 +23,7 @@
 
 1. **color**：4-6 个命名色（bg / fg / muted / border / accent / status），逐色标注用途。对比度底线：正文 ≥4.5:1，大字（≥24px，或 ≥18.66px 加粗）≥3:1——不达标换色，不降标准。
 2. **type**：字族与角色（至多两族，两族需明显区分）；完整字阶（如 12/14/16/20/24/32/48，比例固定）；每级行高；字重限 2-3 档。正文行长 <80 字符，衬线可略宽、行高略松。
-3. **spacing**：全部间距取自一个 4px 基数阶（4/8/12/16/24/32/48/64），一档枚举，禁止阶外魔法数。
+3. **spacing**：全部间距取自固定枚举阶 4/8/12/16/24/32/48/64（均为 4 的倍数），禁止阶外魔法数。
 4. **layout**：圆角限 2-3 档并注明每档用途；阴影限 2-3 档；边框规则（1px 与 hairline 的用途区分）；对齐基准（左对齐 / 居中的选择与理由）。
 5. **motion**：时长档位（如 120/200/320ms）+ easing 档位 2-3 条（注明各档语义）；只动 transform 与 opacity；非用户触发的动效至多一个编排时刻。
 6. **principles**：3-5 条本项目独有原则，每条从方向卡推导，不写通用格言。
@@ -45,4 +45,4 @@ build 完成后、每轮 critic 修改落地后各过一遍。命中即修，不
 
 ## 来源与依赖
 
-先计划后实现的 token two-pass 吸收自 frontend-design skill（claude-plugins-official，Anthropic）；craft 密度与动效纪律吸收自 emil-design-eng（Emil Kowalski 的 design engineering 材料）；字段定义与数值门槛为本仓库工程化裁量。本文件对外部 skill 无运行时依赖。
+机制来源与裁量登记见 [SKILL.md](../SKILL.md)「方法论来源」段（token two-pass 吸收自 frontend-design，craft 密度与动效纪律吸收自 emil-design-eng）。本文件对外部 skill 无运行时依赖，规则自带。

@@ -1,0 +1,20 @@
+# Copy Audit——文案轴（lint → 真值）
+
+只管 landing/营销层与检测流程；产品 UI 微文案（按钮/错误/空态/术语一致）归 frontend-design 写作节——两层规则相反（营销层允许第一人称与叙事，UI 层禁 "we"），不混用。
+
+## lint（确定性，与 AI Tells Audit 同趟跑）
+
+impeccable 已含 3 条文案规则——marketing-buzzword（29 短语，**单次命中即报**）、aphoristic-cadence（"X. No Y." 警句式 ≥3 次才报）、em-dash-overuse（≥8 个+密度门槛），英文项目零新增工具。词表误伤（品牌名恰含词表词——顶级站也会犯，Basecamp 自家文案就用过 industry-leading）经人裁决保留并记入豁免清单快照（收口留档，下次不重复裁决）。
+
+中文项目自建 grep 词表（现有工具与词表全英文，中文是空白；**本仓库词表单点在此行**，CI 从本行提取扫描其余文档）：
+
+```bash
+grep -rnoE '赋能|一站式|全方位|行业领先|重新定义|颠覆|未来已来|极致体验|卓越体验|匠心打造|精心打造|无缝体验|无缝衔接|降本增效|助您|让您轻松' \
+  --include='*.tsx' --include='*.jsx' --include='*.html' --include='*.vue' .
+```
+
+初版词表随实测迭代；单次命中即报，误伤走人裁决留档。句式 tell（排比三连、"不是…而是…"、"不止于…更是…"）不进 grep——由 Phase 2 critic 循环按密度判，Phase 3 不重跑 critic。
+
+## 真值（人）
+
+AI 文案一律当 Lorem ipsum，但人不是重写全部，是**填真值**——真实数字/客户名/机制名只有人有（顶级 landing 的具体性全靠 50,000/$1.9T/99.9999% 式实物，空形容词是 AI tell）；headline/副标/CTA 终稿人拍板：更短、更口语、零营销腔。
