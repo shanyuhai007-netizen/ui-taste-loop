@@ -19,6 +19,8 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
 
 不冲突：本 skill 管流程，其余在各自阶段被调用。
 
+降级：本表为作者环境的分工，流程本身不依赖这些 skill。未安装 frontend-design / emil-design-eng 时：风格反模式由 Phase 2 critic 模板的 AI Tells 清单与 Phase 3 审计兜底，产品 UI 微文案两层规则以 Copy Audit 节内联描述为准；未安装 web-design-guidelines 时 a11y 审计人工对照 WCAG 或跳过；impeccable 为 npx 零安装，无依赖。
+
 ## 票内时序：与 /tdd、/code-review 的编排
 
 本 skill 与 /tdd（行为轴）、/code-review（代码轴）是同一张 UI 票内并列的三条验证轴，不互相替代（示例为 Matt Pocock skills 语境，无此环境时映射到等价的测试先行/代码评审流程）：
@@ -39,7 +41,7 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
    - 让 agent 从字符串的子模式/重复字符/数字提取设计方向（配色基调、布局隐喻、字体气质），一次产出 **4 个方向**
    - 用户挑选；生成的页面不得暴露字符串本身
 2. **Ambitious brief**：选定方向后，brief 要敢想——引用灵感源（某个游戏、某次室内设计趋势、某个艺术装置），而非「做一个好看的后台页面」。「这不可能行吧」的感觉恰是方向正确的信号。
-3. **可选：生图做目标图/moodboard**（火山 Seedream，已实测可用）。URL 24 小时失效，**必须当场下载**：
+3. **可选：生图做目标图/moodboard**（火山 Seedream，需 `ARK_API_KEY` 环境变量）。URL 24 小时失效，**必须当场下载**：
 
 ```bash
 python3 - <<'EOF'
@@ -48,10 +50,8 @@ import json, os, urllib.request
 PROMPT = '<目标图/moodboard 的描述>'
 OUT_PATH = '<保存路径>.png'
 key = os.environ.get('ARK_API_KEY')
-if not key:  # ZCode 会话内 env 未生效时从配置读
-    cfg = json.load(open(os.path.expanduser('~/.zcode/v2/config.json')))
-    key = next(p['options']['apiKey'] for p in cfg['provider'].values()
-               if p.get('name') == '火山引擎' and p.get('options', {}).get('apiKey'))
+if not key:
+    raise SystemExit('需先设置 ARK_API_KEY 环境变量')
 req = urllib.request.Request(
     'https://ark.cn-beijing.volces.com/api/v3/images/generations',
     data=json.dumps({'model': 'doubao-seedream-5-5-261028',
@@ -115,4 +115,4 @@ AI 只会加不会减，克制本身就是高级感。打磨阶段主要工作�
 - 记录留档：seed string、4 个方向、每轮 critic 绝对分与 A/B 判决序列、豁免清单快照、Copy Audit 词表命中与裁决、最终截图，供下次 retro 提炼个人 taste 偏好
 - 3D 视觉向的深度循环可选装 achimala/dream-loop（需 Blender MCP）；常规 UI 用本流程即可
 
-方法论来源：Anshu Chimala《How to turn your AI into a world-class designer》（Lenny's Newsletter, 2026-09-01，[付费原文](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world)／[免费镜像](https://github.com/CodingRookie98/cr-agent-arsenal/blob/master/docs/reference/articles/how-to-turn-your-ai-into-a-world-class-designer.md)）。其中「一次出 4 个方向」为本地工程化裁量（源出原文「先跑 1-2 轮看收敛性再放开，防烧 token」）；锚定对比评审、豁免清单、复合退出条件为 2026-11-18 首次全流程实测后的修订——五轮绝对分 7.2→8.0→7.5→7.6→8.3 呈锯齿，冻结页裁判间方差 ±0.5~1.2 证明裸绝对分跨裁判不可比，实测数据与四机制分析见 [docs/evaluation-2026-11-18.md](docs/evaluation-2026-11-18.md)；Copy Audit 文案轴（lint/中文词表/人填真值）为 2026-11-18 调研驱动的本地裁量——源出原文 T8「文案手写」但做了细化，词表与阈值行为经 impeccable 源码复核；其余流程均为原文技巧（image-gen 闭环的 skill 化成品另见 [achimala/dream-loop](https://github.com/achimala/dream-loop)）。
+方法论来源：Anshu Chimala《How to turn your AI into a world-class designer》（Lenny's Newsletter, 2026-09-01，[付费原文](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world)／[免费镜像](https://github.com/CodingRookie98/cr-agent-arsenal/blob/master/docs/reference/articles/how-to-turn-your-ai-into-a-world-class-designer.md)）。其中「一次出 4 个方向」为本地工程化裁量（源出原文「先跑 1-2 轮看收敛性再放开，防烧 token」）；锚定对比评审、豁免清单、复合退出条件为 2026-11-18 首次全流程实测后的修订——五轮绝对分 7.2→8.0→7.5→7.6→8.3 呈锯齿，冻结页裁判间方差 ±0.5~1.2 证明裸绝对分跨裁判不可比，实测数据与四机制分析见 [docs/evaluation-2026-11-18.md](docs/evaluation-2026-11-18.md)；Copy Audit 文案轴（lint/中文词表/人填真值）为 2026-11-18 调研驱动的本地裁量——源出原文 T8「文案手写」但做了细化，词表与阈值行为经 impeccable 源码复核；依赖降级说明（未安装相关 skill 时的兜底路径）为公开仓工程裁量；其余流程均为原文技巧（image-gen 闭环的 skill 化成品另见 [achimala/dream-loop](https://github.com/achimala/dream-loop)）。
