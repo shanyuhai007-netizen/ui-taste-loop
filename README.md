@@ -51,6 +51,7 @@ mkdir -p ~/.claude/skills && cp -r ui-taste-loop/ ~/.claude/skills/ui-taste-loop
 - Copy Audit 文案轴与 critic 文案评审项（impeccable 文案规则 + 中文词表初版 + 人填真值）：**调研驱动设计，尚未实测**（词表随实测迭代）
 - critic 需要 agent 具备子 agent 派发与截图能力（浏览器截图或实现侧先渲染）
 - 评审口径：本仓库成文惯例（description 一致性 / provenance 台账 / 公开仓卫生 / 状态诚实 / 词表单点）见 [docs/CONVENTIONS.md](docs/CONVENTIONS.md)，违者按硬违规计
+- 开发流程：main 受保护（PR + `checks` CI + squash-only + admin 不豁免），一切改动走 [docs/GITHUB-FLOW.md](docs/GITHUB-FLOW.md)
 
 ## 来源与致谢
 
