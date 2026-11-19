@@ -19,7 +19,7 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
 
 不冲突：本 skill 管流程，其余在各自阶段被调用。
 
-降级：本表为作者环境的分工，流程本身不依赖这些 skill——未安装 frontend-design / emil-design-eng 时按本表与各 Phase 内联规则执行；未安装 web-design-guidelines 时 a11y 审计人工对照 WCAG 或跳过；impeccable 为 npx 零安装，无依赖。
+降级：本表为作者环境的分工，流程本身不依赖这些 skill。未安装 frontend-design / emil-design-eng 时：风格反模式由 Phase 2 critic 模板的 AI Tells 清单与 Phase 3 审计兜底，产品 UI 微文案两层规则以 Copy Audit 节内联描述为准；未安装 web-design-guidelines 时 a11y 审计人工对照 WCAG 或跳过；impeccable 为 npx 零安装，无依赖。
 
 ## 票内时序：与 /tdd、/code-review 的编排
 
@@ -115,4 +115,4 @@ AI 只会加不会减，克制本身就是高级感。打磨阶段主要工作�
 - 记录留档：seed string、4 个方向、每轮 critic 绝对分与 A/B 判决序列、豁免清单快照、Copy Audit 词表命中与裁决、最终截图，供下次 retro 提炼个人 taste 偏好
 - 3D 视觉向的深度循环可选装 achimala/dream-loop（需 Blender MCP）；常规 UI 用本流程即可
 
-方法论来源：Anshu Chimala《How to turn your AI into a world-class designer》（Lenny's Newsletter, 2026-09-01，[付费原文](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world)／[免费镜像](https://github.com/CodingRookie98/cr-agent-arsenal/blob/master/docs/reference/articles/how-to-turn-your-ai-into-a-world-class-designer.md)）。其中「一次出 4 个方向」为本地工程化裁量（源出原文「先跑 1-2 轮看收敛性再放开，防烧 token」）；锚定对比评审、豁免清单、复合退出条件为 2026-11-18 首次全流程实测后的修订——五轮绝对分 7.2→8.0→7.5→7.6→8.3 呈锯齿，冻结页裁判间方差 ±0.5~1.2 证明裸绝对分跨裁判不可比，实测数据与四机制分析见 [docs/evaluation-2026-11-18.md](docs/evaluation-2026-11-18.md)；Copy Audit 文案轴（lint/中文词表/人填真值）为 2026-11-18 调研驱动的本地裁量——源出原文 T8「文案手写」但做了细化，词表与阈值行为经 impeccable 源码复核；其余流程均为原文技巧（image-gen 闭环的 skill 化成品另见 [achimala/dream-loop](https://github.com/achimala/dream-loop)）。
+方法论来源：Anshu Chimala《How to turn your AI into a world-class designer》（Lenny's Newsletter, 2026-09-01，[付费原文](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world)／[免费镜像](https://github.com/CodingRookie98/cr-agent-arsenal/blob/master/docs/reference/articles/how-to-turn-your-ai-into-a-world-class-designer.md)）。其中「一次出 4 个方向」为本地工程化裁量（源出原文「先跑 1-2 轮看收敛性再放开，防烧 token」）；锚定对比评审、豁免清单、复合退出条件为 2026-11-18 首次全流程实测后的修订——五轮绝对分 7.2→8.0→7.5→7.6→8.3 呈锯齿，冻结页裁判间方差 ±0.5~1.2 证明裸绝对分跨裁判不可比，实测数据与四机制分析见 [docs/evaluation-2026-11-18.md](docs/evaluation-2026-11-18.md)；Copy Audit 文案轴（lint/中文词表/人填真值）为 2026-11-18 调研驱动的本地裁量——源出原文 T8「文案手写」但做了细化，词表与阈值行为经 impeccable 源码复核；依赖降级说明（未安装相关 skill 时的兜底路径）为公开仓工程裁量；其余流程均为原文技巧（image-gen 闭环的 skill 化成品另见 [achimala/dream-loop](https://github.com/achimala/dream-loop)）。
