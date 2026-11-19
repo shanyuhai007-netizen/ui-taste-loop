@@ -10,18 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # dogfood：词表单点取自 SKILL.md 的 grep 行（改词表只改 SKILL.md），
-      # 扫 README 与 docs——SKILL.md 自身含词表定义与示例，不入扫描
+      # dogfood：词表单点取自 references/copy-audit.md 的 grep 行（改词表只改该文件），
+      # 扫其余文档（README、SKILL.md、docs、其余 references）——定义文件自身不入扫描
       - name: copy wordlist
         run: |
-          PATTERN=$(sed -n "s/.*grep -rnoE '\([^']*\)'.*/\1/p" SKILL.md | head -1)
-          if grep -qE "$PATTERN" README.md docs/*.md; then
-            echo "::error::中文营销腔词表命中（词表定义见 SKILL.md Phase 3.3）"
-            grep -nE "$PATTERN" README.md docs/*.md
+          PATTERN=$(sed -n "s/.*grep -rnoE '\([^']*\)'.*/\1/p" references/copy-audit.md | head -1)
+          TARGETS=$(ls README.md SKILL.md docs/*.md references/*.md | grep -v '^references/copy-audit\.md$')
+          if grep -qE "$PATTERN" $TARGETS; then
+            echo "::error::中文营销腔词表命中（词表定义见 references/copy-audit.md）"
+            grep -nE "$PATTERN" $TARGETS
             exit 1
           fi
       - name: links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress --max-retries 3 README.md SKILL.md docs/*.md
+          args: --no-progress --max-retries 3 README.md SKILL.md docs/*.md references/*.md
           fail: true
