@@ -19,6 +19,8 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
 
 不冲突：本 skill 管流程，其余在各自阶段被调用。
 
+降级：本表为作者环境的分工，流程本身不依赖这些 skill——未安装 frontend-design / emil-design-eng 时按本表与各 Phase 内联规则执行；未安装 web-design-guidelines 时 a11y 审计人工对照 WCAG 或跳过；impeccable 为 npx 零安装，无依赖。
+
 ## 票内时序：与 /tdd、/code-review 的编排
 
 本 skill 与 /tdd（行为轴）、/code-review（代码轴）是同一张 UI 票内并列的三条验证轴，不互相替代（示例为 Matt Pocock skills 语境，无此环境时映射到等价的测试先行/代码评审流程）：
@@ -39,7 +41,7 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
    - 让 agent 从字符串的子模式/重复字符/数字提取设计方向（配色基调、布局隐喻、字体气质），一次产出 **4 个方向**
    - 用户挑选；生成的页面不得暴露字符串本身
 2. **Ambitious brief**：选定方向后，brief 要敢想——引用灵感源（某个游戏、某次室内设计趋势、某个艺术装置），而非「做一个好看的后台页面」。「这不可能行吧」的感觉恰是方向正确的信号。
-3. **可选：生图做目标图/moodboard**（火山 Seedream，已实测可用）。URL 24 小时失效，**必须当场下载**：
+3. **可选：生图做目标图/moodboard**（火山 Seedream，需 `ARK_API_KEY` 环境变量）。URL 24 小时失效，**必须当场下载**：
 
 ```bash
 python3 - <<'EOF'
@@ -48,10 +50,8 @@ import json, os, urllib.request
 PROMPT = '<目标图/moodboard 的描述>'
 OUT_PATH = '<保存路径>.png'
 key = os.environ.get('ARK_API_KEY')
-if not key:  # ZCode 会话内 env 未生效时从配置读
-    cfg = json.load(open(os.path.expanduser('~/.zcode/v2/config.json')))
-    key = next(p['options']['apiKey'] for p in cfg['provider'].values()
-               if p.get('name') == '火山引擎' and p.get('options', {}).get('apiKey'))
+if not key:
+    raise SystemExit('需先设置 ARK_API_KEY 环境变量')
 req = urllib.request.Request(
     'https://ark.cn-beijing.volces.com/api/v3/images/generations',
     data=json.dumps({'model': 'doubao-seedream-5-5-261028',
