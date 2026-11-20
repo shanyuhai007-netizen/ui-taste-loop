@@ -1,0 +1,48 @@
+{
+  "skill_name": "ui-taste-loop",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我要给自己的播客剪辑 SaaS「声波剪 ClipWave」做一个中文 landing page（单页）。产品卖点：上传播客音频，10 分钟出成片切片和摘要文案，免费版每月 2 小时时长。页面要有 hero、功能展示、定价三档、FAQ。审美上别给我紫渐变加 bento 卡片那种 AI 味，我想先看几个差异大的方向再定。",
+      "expected_output": "走完三阶段全流程：Discover（seed string 发散 4 张方向卡，人挑 1 张）→ Build（六段 token 契约 + 实现 + craft 检查单）→ Critique（fresh-context critic 双视口截图锚定评审循环至复合退出条件）→ Deliver（减法 + AI Tells Audit + Copy Audit）",
+      "expectations": [
+        "Phase 1 产出恰好 4 张方向卡，每张含方向名/灵感源/配色素描（3-5 个 hex）/字体配对/布局隐喻/敢在哪 六个字段",
+        "方向卡生成前用 /dev/urandom 生成了随机 seed string，且最终页面源码未暴露该字符串",
+        "选定方向后、写第一行 UI 代码前产出六段 token 契约（color/type/spacing/layout/motion/principles）",
+        "critic 评审输入只含截图（桌面全页 + 375px 移动关键页），不含实现代码、diff 或 token 契约",
+        "critic 的 prompt 不含停止线（9/10）或收口条件",
+        "critic 输出的问题逐条带 [缺陷]/[裁决]/[偏好] 分类，且按六维组织",
+        "Phase 3 运行 npx impeccable detect（或等价 lint）并处理或留档命中项",
+        "中文文案经 copy-audit 词表 grep 扫描，「零命中」类自报附 grep/工具输出等机械证据",
+        "headline/CTA 终稿标注为人工拍板，或按人裁预授权留档为「待人裁·可推翻」"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "把我们运营后台的 dashboard 做一次视觉改版，代码在 src/pages/dashboard/，React + Tailwind。旧版可以跑起来自己截。主要不满：太拥挤、层级不清、表格数字没对齐。功能一律不动，只改视觉。",
+      "expected_output": "改版任务走基线锚定路径：旧版 r0 截图先做 viewport 归一化 → R1 即对照旧版基线评审 → 循环至复合退出条件 → 收口前状态抽查 → 收口后改动攒批回环或入遗留清单",
+      "expectations": [
+        "截旧版基线 r0 前检查旧页 viewport meta，缺失则先补 width=device-width, initial-scale=1 再截",
+        "R1 评审输入 = 旧版基线 r0 + 新版两组截图（首轮即建立锚定，不是等 R2）",
+        "移动端 375px 截图仅覆盖关键页，且与旧版同视口可比；无法归一化时留档标注「视口不可比」且不下移动端 A/B 判决",
+        "数字表格列使用 tabular-nums",
+        "收口前对空态/错误态各截一张图单独送评，只判是否达到主界面同一 craft 水平，不进循环",
+        "退出为复合判定（critic 明说无新增缺陷且多数页更好，或绝对分 8.5±0.5 带内无新增缺陷），不按裸绝对分收口",
+        "收口后的任何改动（含 lint 修复）攒批回环送评或显式记入遗留清单，无静默修复"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "给我们的开源数据管道工具 Pipeflow 重做 marketing site 的 hero 和 features 两段，Next.js App Router 项目。现在的页面就是一堆 feature 卡片平铺，很无聊。想要 Vercel/Linear 那种质感但别抄它们。文案是英文的。",
+      "expected_output": "英文项目的三阶段流程，重点验证：ambitious brief 引具体灵感源、craft 契约阶值纪律、AI Tells 与 impeccable 英文文案规则在 polish 阶段集中清理、减法交付",
+      "expectations": [
+        "选定方向后的 brief 引用具体灵感源（作品/场景级），而非「简洁现代」类风格分类空话",
+        "间距/字号取自固定枚举阶（4 的倍数），无阶外魔法数（对产物 grep 可核对）；1-3px 光学微调值在契约 layout 段登记",
+        "AI tells 套路未在首轮生成时全面禁用，而是在 polish 阶段集中清理",
+        "impeccable 文案规则（marketing-buzzword/aphoristic-cadence/em-dash-overuse）跑过，命中项修复或经豁免留档",
+        "真值类内容（真实数字/客户名/机制名）标记为人工槽位待填，不以空形容词顶替",
+        "交付含删减动作记录（砍掉的多余元素），不是纯叠加"
+      ]
+    }
+  ]
+}
