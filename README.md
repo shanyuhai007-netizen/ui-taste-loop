@@ -3,7 +3,7 @@
 AI UI 设计三阶段 skill：seed 发散 → 锚定 A/B critic 闭环 → 减法交付。
 A taste-driven UI loop for coding agents: seeded divergence, anchored A/B critique, subtractive delivery.
 
-核心判断：LLM 默认输出「取悦平均审美的安全牌」（紫渐变、bento 卡片、营销黑话）。**模型不是瓶颈，工作流才是**——多样性从外部注入，评审用独立 fresh context 信号，交付靠减法。方法论源自 Anshu Chimala（前 Apple 设计工程负责人 12 年）的三阶段工作流，skill 化后经一次全流程实测修订了评分协议。
+核心判断：LLM 默认输出「取悦平均审美的安全牌」（紫渐变、bento 卡片、营销黑话）。**模型不是瓶颈，工作流才是**——多样性从外部注入，评审用独立 fresh context 信号，交付靠减法。方法论源自 Anshu Chimala（前 Apple 设计工程负责人 12 年）的三阶段工作流，skill 化后经多轮全流程实测修订了评分协议。
 
 ## 三个阶段
 
@@ -22,7 +22,9 @@ A taste-driven UI loop for coding agents: seeded divergence, anchored A/B critiq
 适用于支持 skill 目录的 coding agent（ZCode / Claude Code / Codex 等，Markdown skill 格式通用）：
 
 ```sh
-git clone https://github.com/shanyuhai007-netizen/ui-taste-loop.git
+git clone --depth 1 https://github.com/shanyuhai007-netizen/ui-taste-loop.git
+# 去掉仓管文件，只留技能本体（docs/ 保留——references 与 README 引用其中的实测记录和流程文档）
+rm -rf ui-taste-loop/.git ui-taste-loop/.github ui-taste-loop/AGENTS.md ui-taste-loop/docs/agents
 # ZCode
 mkdir -p ~/.zcode/skills && cp -r ui-taste-loop/ ~/.zcode/skills/ui-taste-loop
 # Claude Code
@@ -33,11 +35,13 @@ mkdir -p ~/.claude/skills && cp -r ui-taste-loop/ ~/.claude/skills/ui-taste-loop
 
 ## 使用
 
-面向用户的界面生成或视觉改版任务（landing page、面板页、组件视觉重做）先走本流程；纯逻辑实现、无视觉产物的任务不适用。与测试先行（行为轴）、代码评审（代码轴）在同一张票内并列——**完成判定 = 测试全绿 + critic 评审通过 + code-review 通过，三者缺一不可**。
+面向用户的界面生成或视觉改版任务（landing page、面板页、组件视觉重做）先走本流程；纯逻辑实现、无视觉产物的任务不适用。与测试先行（行为轴）、代码评审（代码轴）在同一张票内并列——**完成判定 = 测试全绿 + critic 评审通过（Phase 2 复合退出条件）+ Phase 3 收口（AI Tells/Copy Audit 命中清零或经裁决留档）+ code-review 通过，缺一不可**。
 
 细节（seed string 操作、critic prompt 模板、循环纪律、AI Tells 审计）见 [SKILL.md](SKILL.md) 与 [references/](references/)——SKILL.md 只保留编排骨架，载荷文件按需加载。
 
 ## 状态
+
+本节为各机制实测状态的**单点**（SKILL.md 尾段台账只登记来源，不重复状态）。评测集（prompt + expectations）见 [evals/evals.json](evals/evals.json)，供复跑 benchmark 与回归对照；历史 it1-it3 的完整运行数据未入仓，下述数字以当时运行记录为准。
 
 - 流程骨架（三阶段、seed 发散、减法交付）与「两轮不涨交人裁决」：**已实测有效**
 - 锚定 A/B 评分协议、豁免清单、问题三分类：**已实测**（2026-11-18 首次实测驱动修订，11-20 两轮 benchmark 复验：新版组 pass rate 95.5%/86.5% vs 无技能基线 59.5%）

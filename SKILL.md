@@ -1,6 +1,6 @@
 ---
 name: ui-taste-loop
-description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）。Discover 用 seed string 注入外部随机性发散 4 个方向卡（自带配色素描/字体配对/布局隐喻），Build 前先立 design token 契约（craft baseline，[references/craft-baseline.md](references/craft-baseline.md)），Critique 用 fresh-context critic（按派生层级取隔离最强档，无派生通道时同实例硬隔离降级并留档）只看桌面+移动双视口截图做锚定对比评审（改版任务首轮即对照旧版基线、基线截图先做 viewport 归一化；新旧两版 A/B 判决为主信号、绝对分仅记趋势、问题按六维组织），收口前空态/错误态抽查，收口后改动攒批回环送评或进遗留清单（微观项判决摆动即冻结入豁免、人裁不可达时按裁判共识预授权自裁），自报清零须机械核对，迭代到复合退出条件，Deliver 做减法、AI Tells 审计与文案轴 Copy Audit（lint + 人填真值）。面向用户的界面生成或视觉改版任务（landing page、面板页、组件视觉重做）先走本流程；纯逻辑实现、无视觉产物的任务不适用。
+description: 面向用户的界面生成或视觉改版任务（landing page、面板页、组件视觉重做）先走本流程；纯逻辑实现、无视觉产物的任务不适用。AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）：Discover 用外部 seed string 发散 4 张方向卡（配色素描/字体配对/布局隐喻），Build 前先立 design token 契约（craft baseline），再由 fresh-context critic 只看双视口截图做锚定评审循环；Deliver 做减法收尾，含 AI Tells 审计与文案轴 Copy Audit。循环纪律、评审隔离降级与豁免清单等规则细节见正文与 references/。
 ---
 
 # UI Taste Loop
@@ -46,7 +46,12 @@ description: AI UI 设计三阶段工作流（源自 Anshu Chimala 方法论）�
 
 1. **Token 契约**：写第一行代码前，把选定方向展开成六段 token 契约（color/type/spacing/layout/motion/principles），实现只取契约内的值。规范、craft 检查单与实测依据见 [references/craft-baseline.md](references/craft-baseline.md)——实测中 critic 反复挑的间距/字阶/色彩层次问题，靠每轮 fresh critic 修是最贵的路径，build 时一次做对；契约要改时同步改全部已实现处，不留漂移。
 2. **Build**：按契约实现，frontend-design 约束下进行；moodboard/参考图可喂给实现 agent 当质量锚点（参考，不是抄）。完成后过 craft 检查单（确定性项命中即修，不流入 critic）。
-3. **Critique**：写代码的 agent 不能自评设计（放不下自己的决策，无法 zoom out）。评审者必须是 fresh-context critic，按**派生层级**取隔离最强档（实测同实例降级运行出现过 critic 引用实现侧 diff 矩阵——隔离破防）：主会话派生 > 子代理内上报主控派生（不就地降级自评）> 同实例硬隔离（最后手段：输入硬隔离 + 降级留档）；外部 CLI（codex exec 等）仅在环境确知有额度时作末档等价替代，属环境裁量。层级细则与视觉输入保真阶梯见 [references/critic-prompt.md](references/critic-prompt.md)。critic 只喂截图、不给代码/实现/历史：R1 喂本轮各页——**视觉改版任务的 R1 = 旧版基线 r0 + 新版**（锚定从首轮建立，不是等 R2）；R2 起喂上一轮+本轮两组做锚定对比——裁判每轮更换，绝对分跨裁判不可比（实测裁判间方差 ±0.5~1.2），可比信号只有同一裁判眼里的新旧两版。**截图协议（双视口）**：桌面全页（全部页面）+ 移动 375px 视口（仅关键页：首页、信息密度最高页）——只截桌面 happy path 会把质量上限封在 critic 看不到的面上。改版任务截旧版基线 r0 前先查旧页 viewport meta：缺失则先补 `width=device-width, initial-scale=1` 再截——旧页缺 meta 时「移动截图」实为 ~550px 桌面缩放，与新版 375px 不可比（实测 6 个涉基线运行仅 1 个察觉）；确实无法归一化时在留档标注「视口不可比」，移动端不下 A/B 判决。prompt 模板、豁免清单与状态抽查方式见 [references/critic-prompt.md](references/critic-prompt.md)。截图用浏览器截取或让实现 agent 先渲染。
+3. **Critique**：写代码的 agent 不能自评设计（放不下自己的决策，无法 zoom out）——评审者必须是 fresh-context critic：
+   - **隔离档位**：按**派生层级**取隔离最强档（实测同实例降级运行出现过 critic 引用实现侧 diff 矩阵——隔离破防）：主会话派生 > 子代理内上报主控派生（不就地降级自评）> 同实例硬隔离（最后手段：输入硬隔离 + 降级留档）；外部 CLI（codex exec 等）仅在环境确知有额度时作末档等价替代，属环境裁量。层级细则与视觉输入保真阶梯见 [references/critic-prompt.md](references/critic-prompt.md)
+   - **只喂截图**：不给代码/实现说明/轮次历史。R1 喂本轮各页——**视觉改版任务的 R1 = 旧版基线 r0 + 新版**（锚定从首轮建立）；R2 起喂上一轮+本轮两组做锚定对比。裁判每轮更换，绝对分跨裁判不可比（实测裁判间方差 ±0.5~1.2），可比信号只有同一裁判眼里的新旧两版
+   - **双视口截图**：桌面全页（全部页面）+ 移动 375px 视口（仅关键页：首页、信息密度最高页）——只截桌面 happy path 会把质量上限封在 critic 看不到的面上
+   - **基线 viewport 归一化**：截旧版基线 r0 前先查旧页 viewport meta，缺失则先补 `width=device-width, initial-scale=1` 再截——旧页缺 meta 时「移动截图」实为 ~550px 桌面缩放，与新版 375px 不可比（实测 6 个涉基线运行仅 1 个察觉）；确实无法归一化时在留档标注「视口不可比」，移动端不下 A/B 判决
+   - prompt 模板、豁免清单与状态抽查方式见 [references/critic-prompt.md](references/critic-prompt.md)；截图用浏览器截取或让实现 agent 先渲染
 4. **循环纪律**：
    - 驱动信号 = 判决 + 新增缺陷数；绝对分只记趋势，不单独触发任何动作
    - 收口（其一）：critic 明说「无新增缺陷」且多数页判「更好」；或绝对分进入 8.5±0.5 带且当轮无新增缺陷。9/10 是方向，不是门槛
@@ -72,4 +77,19 @@ AI 只会加不会减，克制本身就是高级感。打磨阶段主要工作�
 - 自报清零须机械核对：「零命中/零违例」类声明必须附机械证据——lint/词表类对最终产物 grep 取证，critic 维度类（间距/字阶/对比度等）逐轮对照缺陷清单核对（实测自报「负面命中 0」被其首轮评审原文三条反驳）；豁免粒度约束（规则级豁免须实测、超量逐元素抽验）见 [references/copy-audit.md](references/copy-audit.md)
 - 3D 视觉向的深度循环可选装 achimala/dream-loop（需 Blender MCP）；常规 UI 用本流程即可
 
-方法论来源：Anshu Chimala《How to turn your AI into a world-class designer》（Lenny's Newsletter, 2026-09-01，[付费原文](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world)／[免费镜像](https://github.com/CodingRookie98/cr-agent-arsenal/blob/master/docs/reference/articles/how-to-turn-your-ai-into-a-world-class-designer.md)）。其中「一次出 4 个方向」为本地工程化裁量（源出原文「先跑 1-2 轮看收敛性再放开，防烧 token」）；锚定对比评审、豁免清单、复合退出条件为 2026-11-18 首次全流程实测后的修订——五轮绝对分 7.2→8.0→7.5→7.6→8.3 呈锯齿，冻结页裁判间方差 ±0.5~1.2 证明裸绝对分跨裁判不可比，实测数据与四机制分析见 [docs/evaluation-2026-11-18.md](docs/evaluation-2026-11-18.md)；Copy Audit 文案轴（lint/中文词表/人填真值）为 2026-11-18 调研驱动的本地裁量——源出原文 T8「文案手写」但做了细化，词表与阈值行为经 impeccable 源码复核；craft baseline（方向卡 + token 契约 + 检查单，[references/craft-baseline.md](references/craft-baseline.md)）为 2026-11-19 实测驱动的本地裁量——token two-pass 吸收自 frontend-design skill（claude-plugins-official，Anthropic）、craft 密度与动效纪律吸收自 emil-design-eng（Emil Kowalski），字段与数值门槛为本仓库定义；双视口截图协议、收口前状态抽查与 critic 问题六维组织同为 2026-11-19 实测驱动修订（critic 问题以间距/字阶/色彩层次等 craft 微观细节为主、原截图协议仅覆盖桌面态），与 craft baseline 一并经 2026-11-20 两轮 benchmark 实测（新版组 pass rate 95.5%/86.5% vs 无技能 59.5%，it3 复验保持）；渐进披露拆分（SKILL.md 编排骨架 + references/ 载荷文件）为 2026-11-19 公开仓工程裁量；依赖降级说明（未安装相关 skill 时的兜底路径）为公开仓工程裁量；critic 派生层级与硬隔离降级、critic 视觉输入保真阶梯、基线截图 viewport 归一化、改版任务首轮锚定语义（R1 = 旧版基线 + 新版）、自报清零机械核对与豁免粒度约束、光学微调契约登记与收口后改动对账为 2026-11-20 两轮 benchmark（9 运行）实测驱动的本地修订；轮次组织纪律（收口后攒批回环、微观项摆动早期冻结、人裁预授权自裁，含批次轮 prompt 零意图注入细则）同为本地修订——it3 改进轮实测成本 +2.1× 时长/+4.6× tokens 而断言面与盲比（4 judge 双序盲评 2:2 打平）均未分出高下，定调为轮次组织治理；批次轮零注入细则由 2026-11-20 硬隔离 spike 的锚定瑕疵实证补入；其余流程均为原文技巧（image-gen 闭环的 skill 化成品另见 [achimala/dream-loop](https://github.com/achimala/dream-loop)）。
+## 方法论来源
+
+骨架（三阶段、seed 发散、fresh-context critic、减法交付）源自 Anshu Chimala《How to turn your AI into a world-class designer》（Lenny's Newsletter, 2026-09-01，[付费原文](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world)／[免费镜像](https://github.com/CodingRookie98/cr-agent-arsenal/blob/master/docs/reference/articles/how-to-turn-your-ai-into-a-world-class-designer.md)）。其余机制均为本地裁量/修订，台账如下（未列出者均为原文技巧）；各机制的实测数据与状态单点见 [docs/evaluation-2026-11-18.md](docs/evaluation-2026-11-18.md) 与 [README.md](README.md)「状态」：
+
+| 机制 | 来源与登记 |
+|---|---|
+| 一次出 4 张方向卡 | 本地工程化裁量（源出原文「先跑 1-2 轮看收敛性再放开，防烧 token」） |
+| 锚定对比评审、豁免清单、复合退出条件、问题三分类 | 2026-11-18 首次全流程实测修订 |
+| Copy Audit 文案轴（lint/中文词表/人填真值） | 2026-11-18 调研驱动（源出原文 T8「文案手写」细化；词表与阈值行为经 impeccable 源码复核） |
+| craft baseline（方向卡 + token 契约 + 检查单） | 2026-11-19 实测驱动（token two-pass 吸收自 frontend-design，craft 密度与动效纪律吸收自 emil-design-eng；字段与数值门槛本仓库定义） |
+| 双视口截图协议、收口前状态抽查、critic 问题六维组织 | 2026-11-19 实测驱动修订 |
+| critic 派生层级与硬隔离降级、视觉输入保真阶梯、基线 viewport 归一化、R1 锚定语义、自报清零机械核对与豁免粒度、光学微调契约登记、收口后改动对账 | 2026-11-20 两轮 benchmark（9 运行）实测驱动修订 |
+| 轮次组织纪律（收口后攒批回环、摆动早期冻结、人裁预授权、批次轮零意图注入） | 同上，it3 成本对照定调；批次轮零注入由 2026-11-20 硬隔离 spike 锚定瑕疵实证补入 |
+| 渐进披露拆分、依赖降级说明 | 公开仓工程裁量 |
+
+原文 image-gen 闭环的 skill 化成品另见 [achimala/dream-loop](https://github.com/achimala/dream-loop)。
