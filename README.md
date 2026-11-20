@@ -43,10 +43,10 @@ mkdir -p ~/.claude/skills && cp -r ui-taste-loop/ ~/.claude/skills/ui-taste-loop
 - 锚定 A/B 评分协议、豁免清单、问题三分类：**已实测**（2026-11-18 首次实测驱动修订，11-20 两轮 benchmark 复验：新版组 pass rate 95.5%/86.5% vs 无技能基线 59.5%）
 - Copy Audit 文案轴（impeccable 文案规则 + 中文词表 + 人填真值）：lint 与裁决层**已实测**（词表零命中自报须附 grep 机械证据的口径经 it3 验证）；真值人填层为**设计未实测**
 - craft baseline（方向卡 + token 契约 + craft 检查单）、双视口截图协议、critic 问题六维组织：**已实测有效**（it1/it2 断言级差分 + it3 保持；1-3px 光学微调契约登记经 it3 行为级验证）
-- critic 派生层级与硬隔离降级、视觉输入保真阶梯（[references/critic-prompt.md](references/critic-prompt.md)）：派生层级选档行为**已实测**（it3：无嵌套派生环境正确选外部 CLI 等价通道并留档）；**同实例硬隔离第 3 档未实测**（it3 环境有可用外部通道未触发该档）；保真阶梯**未触发降级**（附图直读像素通道可用）
+- critic 派生层级与硬隔离降级、视觉输入保真阶梯（[references/critic-prompt.md](references/critic-prompt.md)）：派生层级选档行为**已实测**（it3：无嵌套派生环境正确选外部 CLI 等价通道并留档；2026-11-20 spike：第 1/2 档结构性不可用环境下正确落第 3 档，输入硬隔离、降级留档与从严收口全链路执行）；保真阶梯第 2 档（图像分析工具降级）**已实测可用**（Read 仅回 CDN URL 场景，spike 10 次取像全程），第 3 档（几何投影）未触发
 - 基线截图 viewport 归一化、改版任务 R1 锚定语义（R1 = 旧版基线 + 新版）：**已实测**（it3 断言级差分：新版归一化合规、旧版 552px 未归一化误下移动 A/B；R1 锚定无回归）
 - 自报清零机械核对与豁免粒度、收口后改动对账（回环送评或进遗留清单）：**已实测**（it3 行为级：新版自报附机械证据、收口后改动全部回环；旧版存在无证据自报与未送评修复）
-- 轮次组织纪律（收口后攒批回环、微观项摆动早期冻结、人裁预授权自裁，[references/critic-prompt.md](references/critic-prompt.md)）：**修订未实测**——it3 实测定调（无差别逐轮送评 +2.1×/+4.6× 而断言面与 4 judge 盲比均打平；摆动多耗 3 轮、子代理人裁询问双重超时为直接证据），规则成文待 it4 验证
+- 轮次组织纪律（收口后攒批回环、微观项摆动早期冻结、人裁预授权自裁，[references/critic-prompt.md](references/critic-prompt.md)）：攒批回环与人裁预授权**已实测（spike 单运行，行为级）**——攒批轮抓到 22 处 lint 真 bug 且像素 diff 归因无回退、自裁 3 项全部留「待人裁·可推翻」；摆动早期冻结**未触发**（该运行判决单调）；it3 定调证据：无差别逐轮送评 +2.1×/+4.6× 而断言面与 4 judge 盲比均打平、摆动多耗 1-2 轮（运行自认 3 轮）、子代理人裁询问双重超时；全量 it4 benchmark 待跑
 - critic 首选具备子 agent 派发能力的环境，无派发通道时按派生层级降级（上报主控 / 同实例硬隔离 / 外部 CLI 等价通道）并留档；截图能力必需（浏览器截图或实现侧先渲染）
 - 评审口径：本仓库成文惯例（description 一致性 / provenance 台账 / 公开仓卫生 / 状态诚实 / 词表单点）见 [docs/CONVENTIONS.md](docs/CONVENTIONS.md)，违者按硬违规计
 - 开发流程：main 受保护（PR + `checks` CI + squash-only + admin 不豁免），一切改动走 [docs/GITHUB-FLOW.md](docs/GITHUB-FLOW.md)
